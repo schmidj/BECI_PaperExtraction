@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Marine Heatwaves Paper Extraction</title>
+</head>
+<body>
+    <h1>Marine Heatwaves Papers</h1>
+    <form method="get" action="/search">
+        <input type="text" name="query" placeholder="Semantic search papers...">
+        <button type="submit">Search</button>
+    </form>
+    <ul>
+        {% for paper in papers %}
+        <li>
+            <strong><a href="{{ paper.url }}" target="_blank">{{ paper.title }}</a></strong><br>
+            Authors: {{ paper.authors }}<br>
+            Year: {{ paper.year }}<br>
+            Journal: {{ paper.journal }}
+        </li>
+        {% else %}
+        <li>No papers found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
