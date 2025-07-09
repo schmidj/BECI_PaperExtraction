@@ -3,26 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <title>Marine Heatwaves Paper Extraction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .filters {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .filters select, .filters input {
+            margin-right: 10px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .filters button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .filters button:hover {
+            background-color: #0056b3;
+        }
+        .paper-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+        }
+        .paper-title {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .paper-title:hover {
+            text-decoration: underline;
+        }
+        .paper-meta {
+            color: #666;
+            margin: 5px 0;
+        }
+        .paper-abstract {
+            font-style: italic;
+            margin: 10px 0;
+        }
+        .paper-category {
+            display: inline-block;
+            padding: 3px 8px;
+            color: white;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .category-ecological-impacts { background-color: #28a745; }
+        .category-physical-oceanography { background-color: #007bff; }
+        .category-modeling-and-forecasting { background-color: #6f42c1; }
+        .category-socioeconomic-impacts { background-color: #fd7e14; }
+        .category-biogeochemistry { background-color: #20c997; }
+        .category-detection-and-metrics { background-color: #e83e8c; }
+        .category-resilience-and-adaptation { background-color: #ffc107; color: #212529; }
+        .category-other { background-color: #6c757d; }
+        .paper-source {
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
     <h1>Marine Heatwaves Papers</h1>
-    <form method="get" action="/search">
-        <input type="text" name="query" placeholder="Semantic search papers...">
-        <button type="submit">Search</button>
-    </form>
-    <ul>
+    
+    <div class="filters">
+        <form method="get" action="/">
+            <label for="category">Filter by Category:</label>
+            <select name="category" id="category">
+                <option value="">All Categories</option>
+                <option value="ecological impacts">Ecological Impacts</option>
+                <option value="physical oceanography">Physical Oceanography</option>
+                <option value="modeling and forecasting">Modeling and Forecasting</option>
+                <option value="socioeconomic impacts">Socioeconomic Impacts</option>
+                <option value="biogeochemistry">Biogeochemistry</option>
+                <option value="detection and metrics">Detection and Metrics</option>
+                <option value="resilience and adaptation">Resilience and Adaptation</option>
+                <option value="other">Other</option>
+            </select>
+            
+            <label for="query">Search:</label>
+            <input type="text" name="query" id="query" placeholder="Semantic search papers..." value="{{ request.args.get('query', '') }}">
+            
+            <button type="submit">Apply Filters</button>
+        </form>
+    </div>
+
+    <ul style="list-style: none; padding: 0;">
         {% for paper in papers %}
-        <li>
-            <strong><a href="{{ paper.url }}" target="_blank">{{ paper.title }}</a></strong><br>
-            Authors: {{ paper.authors }}<br>
-            Year: {{ paper.year }}<br>
-            Journal: {{ paper.journal }}<br>
-            <em>{{ paper.abstract }}</em><br>
-            {% if paper.keywords %}<strong>Keywords:</strong> {{ paper.keywords }}<br>{% endif %}
-            <small>Source: {{ paper.source }}</small>
+        <li class="paper-item">
+            <a href="{{ paper.url }}" target="_blank" class="paper-title">{{ paper.title }}</a><br>
+            <div class="paper-meta">
+                <strong>Authors:</strong> {{ paper.authors }}<br>
+                <strong>Year:</strong> {{ paper.year }}<br>
+                <strong>Journal:</strong> {{ paper.journal }}<br>
+                {% for category in paper.categories %}
+                <span class="paper-category category-{{ category|lower|replace(' ', '-') }}">{{ category|capitalize }}</span>
+                {% endfor %}
+                <span class="paper-source">Source: {{ paper.source }}</span>
+            </div>
+            <div class="paper-abstract">{{ paper.abstract }}</div>
+            {% if paper.keywords %}<div class="paper-meta"><strong>Keywords:</strong> {{ paper.keywords }}</div>{% endif %}
         </li>
         {% else %}
-        <li>No papers found.</li>
+        <li class="paper-item">No papers found matching your criteria.</li>
         {% endfor %}
     </ul>
 </body>
