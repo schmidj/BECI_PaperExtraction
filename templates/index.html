@@ -16,7 +16,10 @@
             <strong><a href="{{ paper.url }}" target="_blank">{{ paper.title }}</a></strong><br>
             Authors: {{ paper.authors }}<br>
             Year: {{ paper.year }}<br>
-            Journal: {{ paper.journal }}
+            Journal: {{ paper.journal }}<br>
+            <em>{{ paper.abstract }}</em><br>
+            {% if paper.keywords %}<strong>Keywords:</strong> {{ paper.keywords }}<br>{% endif %}
+            <small>Source: {{ paper.source }}</small>
         </li>
         {% else %}
         <li>No papers found.</li>
